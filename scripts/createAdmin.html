@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Admin - Last Zone Legends</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0a0f1a 0%, #1a1f35 50%, #0d1320 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .container {
+      background: rgba(30, 41, 59, 0.8);
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.subtitle {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 30px;
+    }
+    .info-box {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .info-box p {
+      color: #93c5fd;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .info-box strong {
+      color: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      display: none;
+    }
+    .status.success {
+      display: block;
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      color: #86efac;
+    }
+    .status.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+    }
+    .status.loading {
+      display: block;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      color: #93c5fd;
+    }
+    .warning {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      color: #fcd34d;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 Last Zone Legends</h1>
+    <p class="subtitle">Admin Account Creator</p>
+    
+    <div class="warning">
+      ⚠️ <strong>Important:</strong> Make sure you have updated the Firebase config in this file before running!
+    </div>
+
+    <div class="info-box">
+      <p><strong>Email:</strong> lastzonelegends1@gmail.com</p>
+      <p><strong>Password:</strong> Harsh@123</p>
+      <p><strong>Role:</strong> Admin</p>
+    </div>
+
+    <button id="createBtn" onclick="createAdmin()">Create Admin Account</button>
+    
+    <div id="status" class="status"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+    import { getFirestore, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+    // ⚠️ UPDATE THIS WITH YOUR FIREBASE CONFIG
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBjVaNDIoUvm0La7OwGqLxmMFQcrNb_Oh4",
+  authDomain: "skillzone-esports.firebaseapp.com",
+  projectId: "skillzone-esports",
+  storageBucket: "skillzone-esports.firebasestorage.app",
+  messagingSenderId: "496866292552",
+  appId: "1:496866292552:web:21054909e1ce530243f97d"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Admin credentials
+    const ADMIN_EMAIL = "lastzonelegends1@gmail.com";
+    const ADMIN_PASSWORD = "Harsh@123";
+
+    window.createAdmin = async function() {
+      const btn = document.getElementById('createBtn');
+      const status = document.getElementById('status');
+      
+      btn.disabled = true;
+      status.className = 'status loading';
+      status.textContent = '⏳ Creating admin account...';
+
+      try {
+        // Create user in Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASSWORD);
+        const user = userCredential.user;
+
+        // Create admin document in Firestore
+        await setDoc(doc(db, 'users', user.uid), {
+          displayName: 'Admin',
+          email: ADMIN_EMAIL,
+          phone: '',
+          walletBalance: 0,
+          depositedBalance: 0,
+          winningBalance: 0,
+          bonusBalance: 0,
+          status: 'active',
+          role: 'admin',
+          referralCode: 'SZEADMIN',
+          matchesPlayed: 0,
+          totalKills: 0,
+          totalWinnings: 0,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+
+        status.className = 'status success';
+        status.innerHTML = `
+          ✅ <strong>Admin account created successfully!</strong><br><br>
+          User ID: ${user.uid}<br><br>
+          You can now login to the admin panel with:<br>
+          Email: ${ADMIN_EMAIL}<br>
+          Password: Harsh@123
+        `;
+
+      } catch (error) {
+        console.error('Error:', error);
+        status.className = 'status error';
+        
+        if (error.code === 'auth/email-already-in-use') {
+          status.innerHTML = '❌ <strong>Email already exists!</strong><br>This admin account has already been created.';
+        } else if (error.code === 'auth/invalid-api-key') {
+          status.innerHTML = '❌ <strong>Invalid Firebase Config!</strong><br>Please update the firebaseConfig in this file.';
+        } else {
+          status.innerHTML = `❌ <strong>Error:</strong> ${error.message}`;
+        }
+        
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
