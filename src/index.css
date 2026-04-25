@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background-color: #0d1320;
+  color: #f1f5f9;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a2234;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+
+.gradient-header {
+  background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+}
+
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+input, select, textarea {
+  background-color: #1a2234 !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #3b82f6 !important;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.loader {
+  border: 3px solid #1a2234;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
